@@ -25,8 +25,6 @@ func main() {
 
 		switch option {
 		case "1":
-			fmt.Print("Prueba")
-			time.Sleep(2 * time.Second)
 
 		default:
 			helpers.ConsoleCleaner()
