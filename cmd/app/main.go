@@ -1,13 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"time"
-	"todo-app/helpers"
+	"todo-app/internal/helpers"
+	"todo-app/internal/tasks"
 )
 
 func main() {
 	for {
+
+		//Scanner works for reading sentences not only one word
+		scanner := bufio.NewReader(os.Stdin)
+
 		helpers.ConsoleCleaner()
 		helpers.Menu()
 
@@ -25,7 +32,26 @@ func main() {
 
 		switch option {
 		case "1":
+			helpers.ConsoleCleaner()
 
+			fmt.Println("----Creacion de tareas----")
+
+			fmt.Println("Ingrese un titulo para la tarea: ")
+			title, _ := scanner.ReadString('\n')
+
+			fmt.Println("Ingrese una descripción para la tarea: ")
+			description, _ := scanner.ReadString('\n')
+
+			//Task added
+			tasks.CreateTask(title, description)
+
+			helpers.ConsoleCleaner()
+
+			fmt.Println(helpers.GREEN, "Tarea guardada exitosamente 😃", helpers.RESET)
+			time.Sleep(2 * time.Second)
+			helpers.ConsoleCleaner()
+		case "2":
+			helpers.ConsoleCleaner()
 		default:
 			helpers.ConsoleCleaner()
 			fmt.Println("La opción no es valida. Será redirigido al menu para continuar")
