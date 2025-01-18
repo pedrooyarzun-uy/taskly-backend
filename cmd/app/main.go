@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 	"todo-app/internal/helpers"
-	"todo-app/internal/tasks"
 )
 
 func main() {
@@ -32,24 +31,7 @@ func main() {
 
 		switch option {
 		case "1":
-			helpers.ConsoleCleaner()
-
-			fmt.Println("----Creacion de tareas----")
-
-			fmt.Println("Ingrese un titulo para la tarea: ")
-			title, _ := scanner.ReadString('\n')
-
-			fmt.Println("Ingrese una descripción para la tarea: ")
-			description, _ := scanner.ReadString('\n')
-
-			//Task added
-			tasks.CreateTask(title, description)
-
-			helpers.ConsoleCleaner()
-
-			fmt.Println(helpers.GREEN, "Tarea guardada exitosamente 😃", helpers.RESET)
-			time.Sleep(2 * time.Second)
-			helpers.ConsoleCleaner()
+			helpers.CreateTaskMenu(scanner)
 		case "2":
 			helpers.ConsoleCleaner()
 		default:
