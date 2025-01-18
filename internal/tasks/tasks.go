@@ -20,12 +20,15 @@ func CreateTask(title, description string) {
 
 }
 
-func UpdateTask(id int) {
+func UpdateTask(id int) bool {
 	for idx, val := range Tasks {
 		if val.Id == id {
 			Tasks[idx].Completed = true
+			return true
 		}
 	}
+
+	return false
 }
 
 func DeleteTask(id int) {

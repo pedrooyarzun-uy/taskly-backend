@@ -37,3 +37,51 @@ func CreateTaskMenu(scanner *bufio.Reader) {
 	time.Sleep(2 * time.Second)
 	ConsoleCleaner()
 }
+
+func ChangeStatusOfTask(scanner *bufio.Reader) {
+	ConsoleCleaner()
+	fmt.Println("----Modificar estado de la tarea----")
+
+	if len(tasks.Tasks) == 0 {
+		ConsoleCleaner()
+		fmt.Println("No existen tares cargadas en el sistema")
+		fmt.Println("Regresando al menú...")
+		time.Sleep(2 * time.Second)
+		return
+	}
+
+	for _, val := range tasks.Tasks {
+		fmt.Println("Id: ", val.Id, ". Título: ", val.Title)
+	}
+
+	fmt.Println("--------------------")
+	fmt.Println("Seleccione una opción: ")
+
+	var option int
+
+	_, err := fmt.Scanln(&option)
+
+	if err != nil {
+		ConsoleCleaner()
+		fmt.Println("La opción ingresada no es correcta")
+		return
+	}
+
+	done := tasks.UpdateTask(option)
+
+	if done {
+		ConsoleCleaner()
+		fmt.Println("Se modificó la tarea exitosamente!")
+		fmt.Println(GREEN, "Tarea modificada exitosamente! 😃", RESET)
+		fmt.Println(tasks.Tasks)
+		time.Sleep(2 * time.Second)
+		ConsoleCleaner()
+	} else {
+		ConsoleCleaner()
+		fmt.Println(RED, "La tarea ingresada no existe en el sistema", RESET)
+		fmt.Println("Redirigiendo al menú principal")
+		time.Sleep(2 * time.Second)
+		ConsoleCleaner()
+	}
+
+}
