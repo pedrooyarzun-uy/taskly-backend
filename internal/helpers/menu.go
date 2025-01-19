@@ -51,7 +51,15 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 	}
 
 	for _, val := range tasks.Tasks {
-		fmt.Println("Id:", val.Id, ". Título:", val.Title)
+
+		var status string
+		if val.Completed {
+			status = "Done"
+		} else {
+			status = "Doing"
+		}
+
+		fmt.Println("Id:", val.Id, ". Título:", val.Title, ". Status:", status)
 	}
 
 	fmt.Println("--------------------")
