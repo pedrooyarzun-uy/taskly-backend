@@ -31,11 +31,13 @@ func UpdateTask(id int) bool {
 	return false
 }
 
-func DeleteTask(id int) {
+func DeleteTask(id int) bool {
 	for idx, val := range Tasks {
 		if val.Id == id {
 			Tasks = append(Tasks[:idx], Tasks[idx+1:]...)
-			break
+			return true
 		}
 	}
+
+	return false
 }

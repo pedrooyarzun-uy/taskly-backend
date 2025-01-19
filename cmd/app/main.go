@@ -34,6 +34,8 @@ func main() {
 			helpers.CreateTaskMenu(scanner)
 		case "2":
 			helpers.ChangeStatusOfTask(scanner)
+		case "3":
+			helpers.DeleteTask(scanner)
 		default:
 			helpers.ConsoleCleaner()
 			fmt.Println("La opción no es valida. Será redirigido al menu para continuar")

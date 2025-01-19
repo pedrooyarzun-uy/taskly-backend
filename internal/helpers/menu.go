@@ -51,7 +51,7 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 	}
 
 	for _, val := range tasks.Tasks {
-		fmt.Println("Id: ", val.Id, ". Título: ", val.Title)
+		fmt.Println("Id:", val.Id, ". Título:", val.Title)
 	}
 
 	fmt.Println("--------------------")
@@ -71,9 +71,53 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 
 	if done {
 		ConsoleCleaner()
-		fmt.Println("Se modificó la tarea exitosamente!")
 		fmt.Println(GREEN, "Tarea modificada exitosamente! 😃", RESET)
-		fmt.Println(tasks.Tasks)
+		time.Sleep(2 * time.Second)
+		ConsoleCleaner()
+	} else {
+		ConsoleCleaner()
+		fmt.Println(RED, "La tarea ingresada no existe en el sistema", RESET)
+		fmt.Println("Redirigiendo al menú principal")
+		time.Sleep(2 * time.Second)
+		ConsoleCleaner()
+	}
+
+}
+
+func DeleteTask(scanner *bufio.Reader) {
+	ConsoleCleaner()
+	fmt.Println("----Eliminar tarea----")
+
+	if len(tasks.Tasks) == 0 {
+		ConsoleCleaner()
+		fmt.Println("No existen tares cargadas en el sistema")
+		fmt.Println("Regresando al menú...")
+		time.Sleep(2 * time.Second)
+		return
+	}
+
+	for _, val := range tasks.Tasks {
+		fmt.Println("Id:", val.Id, ". Título:", val.Title)
+	}
+
+	fmt.Println("--------------------")
+	fmt.Println("Seleccione una opción: ")
+
+	var option int
+
+	_, err := fmt.Scanln(&option)
+
+	if err != nil {
+		ConsoleCleaner()
+		fmt.Println("La opción ingresada no es correcta")
+		return
+	}
+
+	deleted := tasks.DeleteTask(option)
+
+	if deleted {
+		ConsoleCleaner()
+		fmt.Println(GREEN, "Se eliminnó la tarea exitosamente! 😃", RESET)
 		time.Sleep(2 * time.Second)
 		ConsoleCleaner()
 	} else {
