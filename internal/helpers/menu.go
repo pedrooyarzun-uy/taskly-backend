@@ -55,7 +55,7 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 
 	for _, val := range tasks.Tasks {
 
-		if !val.Completed {
+		if !val.Completed && !val.Deleted {
 			fmt.Printf("ID: %d. Título: %s \n", val.Id, strings.TrimSpace(val.Title))
 		}
 	}
@@ -110,8 +110,9 @@ func DeleteTask(scanner *bufio.Reader) {
 		} else {
 			option = "Doing"
 		}
-
-		fmt.Printf("ID: %d. Título: %s. Status: %s \n", val.Id, strings.TrimSpace(val.Title), option)
+		if !val.Deleted {
+			fmt.Printf("ID: %d. Título: %s. Status: %s \n", val.Id, strings.TrimSpace(val.Title), option)
+		}
 	}
 
 	fmt.Println("--------------------")
@@ -172,7 +173,9 @@ func GetAllTasks() {
 			color = BLUE
 		}
 
-		fmt.Printf("%s ID: %d. Título: %s. Descripción: %s. Status: %s %s \n", color, val.Id, strings.TrimSpace(val.Title), strings.TrimSpace(val.Description), option, RESET)
+		if !val.Deleted {
+			fmt.Printf("%s ID: %d. Título: %s. Descripción: %s. Status: %s %s \n", color, val.Id, strings.TrimSpace(val.Title), strings.TrimSpace(val.Description), option, RESET)
+		}
 	}
 
 	fmt.Println("--------------------")

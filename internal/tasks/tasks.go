@@ -18,6 +18,7 @@ func CreateTask(title, description string) {
 		Title:       title,
 		Description: description,
 		Completed:   false,
+		Deleted:     false,
 	}
 
 	if len(Tasks) == 0 {
@@ -27,6 +28,8 @@ func CreateTask(title, description string) {
 	}
 
 	Tasks = append(Tasks, newTask)
+	//Save data into json
+	storage.SaveData(Tasks)
 
 }
 
@@ -38,23 +41,30 @@ func UpdateTask(id int) bool {
 		}
 	}
 
+	//Save data into json
+	storage.SaveData(Tasks)
 	return false
 }
 
 func DeleteTask(id int) bool {
+
+	wasUpdated := false
+
 	for idx, val := range Tasks {
 		if val.Id == id {
-			Tasks = append(Tasks[:idx], Tasks[idx+1:]...)
-			return true
+			Tasks[idx].Deleted = true
+			wasUpdated = true
 		}
 	}
 
-	return false
+	//Save data into json
+	storage.SaveData(Tasks)
+	return wasUpdated
 }
 
 func HasPendingTasks() bool {
 	for _, val := range Tasks {
-		if !val.Completed {
+		if !val.Completed && !val.Deleted {
 			return true
 		}
 	}

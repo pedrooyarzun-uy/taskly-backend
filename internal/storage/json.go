@@ -4,24 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"todo-app/internal/models"
 )
 
 const FILE_NAME = "data.json"
+const PATH = "../../internal/storage/" + FILE_NAME
 
 func LoadTasks() []models.Task {
 
-	basePath := "../../internal/storage/"
-
-	fullPath := filepath.Join(basePath, FILE_NAME)
-
 	var tasks []models.Task
 
-	data, err := os.ReadFile(fullPath)
+	data, err := os.ReadFile(PATH)
 	if err != nil {
-		dir, _ := os.Getwd()
-		fmt.Print("VERGAAAAAAAAA", dir)
 		panic(err)
 	}
 
@@ -33,4 +27,18 @@ func LoadTasks() []models.Task {
 	}
 
 	return tasks
+}
+
+func SaveData(tasks []models.Task) bool {
+	updatedJSON, _ := json.MarshalIndent(tasks, "", "	")
+
+	err := os.WriteFile(PATH, updatedJSON, 0644)
+
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	return true
+
 }
