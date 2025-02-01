@@ -1,10 +1,20 @@
 package tasks
 
-var Tasks = []Task{}
+import (
+	"todo-app/internal/models"
+	"todo-app/internal/storage"
+)
+
+var Tasks = []models.Task{}
+
+// Loads data in json into array of the app
+func Init() {
+	Tasks = storage.LoadTasks()
+}
 
 func CreateTask(title, description string) {
 
-	newTask := Task{
+	newTask := models.Task{
 		Title:       title,
 		Description: description,
 		Completed:   false,
