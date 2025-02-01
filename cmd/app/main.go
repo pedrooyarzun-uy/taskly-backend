@@ -6,9 +6,11 @@ import (
 	"os"
 	"time"
 	"todo-app/internal/helpers"
+	"todo-app/internal/tasks"
 )
 
 func main() {
+	tasks.Init()
 	for {
 
 		//Scanner works for reading sentences not only one word

@@ -10,7 +10,6 @@ import (
 )
 
 func Menu() {
-	tasks.Init()
 	fmt.Println(YELLOW, "---Bienvenido a TODO-APP 😃---", RESET)
 	fmt.Println("Seleccione una de las opciones para continuar:")
 	fmt.Println("1. Crear una nueva tarea")
