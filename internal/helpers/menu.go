@@ -3,12 +3,14 @@ package helpers
 import (
 	"bufio"
 	"fmt"
+	"os"
+	"strings"
 	"time"
 	"todo-app/internal/tasks"
 )
 
 func Menu() {
-	fmt.Println(GREEN, "---Bienvenido a TODO-APP 😃---")
+	fmt.Println(YELLOW, "---Bienvenido a TODO-APP 😃---", RESET)
 	fmt.Println("Seleccione una de las opciones para continuar:")
 	fmt.Println("1. Crear una nueva tarea")
 	fmt.Println("2. Modificar el estado de una tarea")
@@ -33,37 +35,32 @@ func CreateTaskMenu(scanner *bufio.Reader) {
 
 	ConsoleCleaner()
 
-	fmt.Println(GREEN, "Tarea guardada exitosamente 😃", RESET)
+	fmt.Println(GREEN, "Tarea guardada exitosamente! 😃", RESET)
 	time.Sleep(2 * time.Second)
 	ConsoleCleaner()
 }
 
 func ChangeStatusOfTask(scanner *bufio.Reader) {
 	ConsoleCleaner()
-	fmt.Println("----Modificar estado de la tarea----")
 
-	if len(tasks.Tasks) == 0 {
-		ConsoleCleaner()
-		fmt.Println("No existen tares cargadas en el sistema")
+	if !tasks.HasPendingTasks() {
+		fmt.Println(YELLOW, "No existen tares cargadas en el sistema", RESET)
 		fmt.Println("Regresando al menú...")
-		time.Sleep(2 * time.Second)
+		time.Sleep(2500 * time.Millisecond)
 		return
 	}
 
+	fmt.Println("----Modificar estado de la tarea----")
+
 	for _, val := range tasks.Tasks {
 
-		var status string
-		if val.Completed {
-			status = "Done"
-		} else {
-			status = "Doing"
+		if !val.Completed {
+			fmt.Printf("ID: %d. Título: %s \n", val.Id, strings.TrimSpace(val.Title))
 		}
-
-		fmt.Println("Id:", val.Id, ". Título:", val.Title, ". Status:", status)
 	}
 
 	fmt.Println("--------------------")
-	fmt.Println("Seleccione una opción: ")
+	fmt.Println("Ingrese el ID de la tarea: ")
 
 	var option int
 
@@ -79,13 +76,13 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 
 	if done {
 		ConsoleCleaner()
-		fmt.Println(GREEN, "Tarea modificada exitosamente! 😃", RESET)
+		fmt.Println(GREEN, "Tarea pasada a finalizada con éxito! 😃", RESET)
 		time.Sleep(2 * time.Second)
 		ConsoleCleaner()
 	} else {
 		ConsoleCleaner()
-		fmt.Println(RED, "La tarea ingresada no existe en el sistema", RESET)
-		fmt.Println("Redirigiendo al menú principal")
+		fmt.Println(RED, "La tarea ingresada no existe en el sistema ❌", RESET)
+		fmt.Println("Redirigiendo al menú principal...")
 		time.Sleep(2 * time.Second)
 		ConsoleCleaner()
 	}
@@ -98,18 +95,26 @@ func DeleteTask(scanner *bufio.Reader) {
 
 	if len(tasks.Tasks) == 0 {
 		ConsoleCleaner()
-		fmt.Println("No existen tares cargadas en el sistema")
-		fmt.Println("Regresando al menú...")
-		time.Sleep(2 * time.Second)
+		fmt.Println(YELLOW, "No existen tares cargadas en el sistema ⚠️", RESET)
+		fmt.Println("Redirigiendo al menú principal...")
+		time.Sleep(2500 * time.Millisecond)
 		return
 	}
 
 	for _, val := range tasks.Tasks {
-		fmt.Println("Id:", val.Id, ". Título:", val.Title)
+		var option string
+
+		if val.Completed {
+			option = "Done"
+		} else {
+			option = "Doing"
+		}
+
+		fmt.Printf("ID: %d. Título: %s. Status: %s \n", val.Id, strings.TrimSpace(val.Title), option)
 	}
 
 	fmt.Println("--------------------")
-	fmt.Println("Seleccione una opción: ")
+	fmt.Println("Ingrese el ID de la tarea: ")
 
 	var option int
 
@@ -125,15 +130,51 @@ func DeleteTask(scanner *bufio.Reader) {
 
 	if deleted {
 		ConsoleCleaner()
-		fmt.Println(GREEN, "Se eliminnó la tarea exitosamente! 😃", RESET)
+		fmt.Println(GREEN, "Se eliminó la tarea exitosamente! 😃", RESET)
 		time.Sleep(2 * time.Second)
 		ConsoleCleaner()
 	} else {
 		ConsoleCleaner()
 		fmt.Println(RED, "La tarea ingresada no existe en el sistema", RESET)
-		fmt.Println("Redirigiendo al menú principal")
+		fmt.Println("Redirigiendo al menú principal...")
 		time.Sleep(2 * time.Second)
 		ConsoleCleaner()
 	}
 
+}
+
+func GetAllTasks() {
+	ConsoleCleaner()
+
+	if len(tasks.Tasks) == 0 {
+		fmt.Println(YELLOW, "No existen tareas cargadas en el sistema ⚠️", RESET)
+		fmt.Println("Redirigiendo al menú principal...")
+		time.Sleep(2500 * time.Millisecond)
+		return
+	}
+
+	fmt.Println("----Listar tareas----")
+
+	for idx, val := range tasks.Tasks {
+
+		var option string
+		if val.Completed {
+			option = "Done"
+		} else {
+			option = "Doing"
+		}
+
+		var color string
+		if idx%2 == 0 {
+			color = MAGENTA
+		} else {
+			color = BLUE
+		}
+
+		fmt.Printf("%s ID: %d. Título: %s. Descripción: %s. Status: %s %s \n", color, val.Id, strings.TrimSpace(val.Title), strings.TrimSpace(val.Description), option, RESET)
+	}
+
+	fmt.Println("--------------------")
+	fmt.Println("Presione enter para continuar: ")
+	bufio.NewReader(os.Stdin).ReadBytes('\n')
 }

@@ -41,3 +41,13 @@ func DeleteTask(id int) bool {
 
 	return false
 }
+
+func HasPendingTasks() bool {
+	for _, val := range Tasks {
+		if !val.Completed {
+			return true
+		}
+	}
+
+	return false
+}
