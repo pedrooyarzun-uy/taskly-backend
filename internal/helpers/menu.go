@@ -15,7 +15,8 @@ func Menu() {
 	fmt.Println("1. Crear una nueva tarea")
 	fmt.Println("2. Modificar el estado de una tarea")
 	fmt.Println("3. Eliminar una tarea")
-	fmt.Println("4. Listar todas las tareas existentes", RESET)
+	fmt.Println("4. Listar todas las tareas existentes")
+	fmt.Println("5. Cerrar sesión")
 	fmt.Println("------------------")
 	fmt.Println("Ingrese su opcion: ")
 }

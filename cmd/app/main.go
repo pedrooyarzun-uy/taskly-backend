@@ -11,6 +11,7 @@ import (
 
 func main() {
 	tasks.Init()
+Loop:
 	for {
 
 		//Scanner works for reading sentences not only one word
@@ -40,6 +41,8 @@ func main() {
 			helpers.DeleteTask(scanner)
 		case "4":
 			helpers.GetAllTasks()
+		case "5":
+			break Loop
 		default:
 			helpers.ConsoleCleaner()
 			fmt.Println("La opción no es valida. Será redirigido al menu para continuar")
