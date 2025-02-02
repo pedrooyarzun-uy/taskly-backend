@@ -6,6 +6,7 @@ La misma almacena todas las tareas creadas en un archivo data.json para la persi
 
 ## ¿Como usarlo?
 - Instalar Golang en tu máquina [click aqui](https://go.dev/dl/)
+- Clonar el repositorio
 - Abrir la carpeta
 - Ejecutar go build ./cmd/app/main.go
 - Doble click en main.exe
