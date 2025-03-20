@@ -3,7 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
+	"path/filepath"
 	"time"
 	"todo-app/internal/helpers"
 	"todo-app/internal/tasks"
@@ -20,9 +23,16 @@ Loop:
 		helpers.ConsoleCleaner()
 		helpers.Menu()
 
+		envPath := filepath.Join("../../", ".env")
+		err := godotenv.Load(envPath)
+
+		if err != nil {
+			log.Fatal(".env variables could't load", err)
+		}
+
 		var option string
 
-		_, err := fmt.Scanln(&option)
+		_, err = fmt.Scanln(&option)
 
 		if err != nil {
 			helpers.ConsoleCleaner()

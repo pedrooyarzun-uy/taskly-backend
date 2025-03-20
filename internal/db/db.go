@@ -1,7 +1,9 @@
 package db
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"log"
 	"os"
 )
@@ -9,19 +11,23 @@ import (
 var DB *sqlx.DB
 
 func Init() {
-	url := os.Getenv("DB_URL")
-	db_name := os.Getenv("DB_NAME")
+	host := os.Getenv("DB_URL")
+	dbName := os.Getenv("DB_NAME")
 	username := os.Getenv("DB_USERNAME")
 	password := os.Getenv("DB_PASSWORD")
 	port := os.Getenv("DB_PORT")
 
-	DB, err := sqlx.Open("postgres", "postgres://"+username+":"+password+"@"+url+":"+port+"/"+db_name)
+	conString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, username, password, dbName,
+	)
+
+	DB, err := sqlx.Open("postgres", conString)
 
 	if err != nil {
 		log.Fatal("String connection failed: ", err)
 	}
 
-	if DB.Ping() != nil {
+	if err = DB.Ping(); err != nil {
 		log.Fatal("Ping didn't work: ", err)
 	}
 }
