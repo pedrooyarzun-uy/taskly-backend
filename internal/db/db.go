@@ -24,7 +24,8 @@ func Init() {
 			host, port, username, password, dbName,
 		)
 
-		DB, err := sqlx.Open("postgres", conString)
+		var err error
+		DB, err = sqlx.Open("postgres", conString)
 
 		if err != nil {
 			log.Fatal("String connection failed: ", err)
@@ -33,6 +34,7 @@ func Init() {
 		if err = DB.Ping(); err != nil {
 			log.Fatal("Ping didn't work: ", err)
 		}
+
 	})
 }
 
