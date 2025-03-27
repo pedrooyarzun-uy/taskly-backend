@@ -23,7 +23,7 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 func (r *repository) Save(task Task) error {
-	_, err := r.db.Exec("INSERT INTO task (title, description, completed, deleted, created_at) VALUES ($1, $2, $3, $4, NOW())", task.Title, task.Description, task.Completed, task.Deleted)
+	_, err := r.db.Exec("INSERT INTO task (title, description, completed, deleted, created_at) VALUES ($1, $2, $3, $4, $5)", task.Title, task.Description, task.Completed, task.Deleted, task.CreatedAt)
 
 	return err
 }

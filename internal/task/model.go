@@ -3,10 +3,10 @@ package task
 import "time"
 
 type Task struct {
-	Id          int
-	Title       string
-	Description string
-	Completed   bool
-	Deleted     bool
+	Id          int       `db:"id"`
+	Title       string    `db:"title"`
+	Description string    `db:"description"`
+	Completed   bool      `db:"completed"`
+	Deleted     bool      `db:"deleted"`
 	CreatedAt   time.Time `db:"created_at"`
 }

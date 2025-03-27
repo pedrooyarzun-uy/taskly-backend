@@ -8,30 +8,29 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"todo-app/internal/db"
 	"todo-app/internal/helpers"
-	"todo-app/internal/tasks"
 )
 
 func main() {
-	tasks.Init()
+	//Used for loading .env
+	envPath := filepath.Join("../../", ".env")
+	err := godotenv.Load(envPath)
+
+	if err != nil {
+		log.Fatal(".env variables could't load", err)
+	}
+
+	db.Init()
+	helpers.InitServices()
+
 Loop:
 	for {
-
-		//Scanner works for reading sentences not only one word
-		scanner := bufio.NewReader(os.Stdin)
-
 		helpers.ConsoleCleaner()
+		scanner := bufio.NewReader(os.Stdin)
 		helpers.Menu()
 
-		envPath := filepath.Join("../../", ".env")
-		err := godotenv.Load(envPath)
-
-		if err != nil {
-			log.Fatal(".env variables could't load", err)
-		}
-
 		var option string
-
 		_, err = fmt.Scanln(&option)
 
 		if err != nil {

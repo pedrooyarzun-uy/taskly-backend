@@ -1,12 +1,19 @@
 package task
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"time"
+)
 
 type Service struct {
 	repo Repository
 }
 
 func NewService(repo Repository) *Service {
+	if repo == nil {
+		fmt.Print("Esta vacio el repo")
+	}
 	return &Service{repo: repo}
 }
 
@@ -20,6 +27,7 @@ func (s *Service) AddTask(title string, description string) error {
 		Description: description,
 		Completed:   false,
 		Deleted:     false,
+		CreatedAt:   time.Now(),
 	}
 
 	err := s.repo.Save(task)

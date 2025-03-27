@@ -6,8 +6,18 @@ import (
 	"os"
 	"strings"
 	"time"
+	"todo-app/internal/db"
+	"todo-app/internal/task"
 	"todo-app/internal/tasks"
 )
+
+var repo task.Repository
+var service *task.Service
+
+func InitServices() {
+	repo = task.NewRepository(db.DB)
+	service = task.NewService(repo)
+}
 
 func Menu() {
 	fmt.Println(YELLOW, "---Bienvenido a TODO-APP 😃---", RESET)
@@ -33,12 +43,13 @@ func CreateTaskMenu(scanner *bufio.Reader) {
 
 	//Task added
 	tasks.CreateTask(title, description)
+	err := service.AddTask(title, description)
 
-	ConsoleCleaner()
-
+	if err != nil {
+		fmt.Println("Carajo: ", err)
+	}
 	fmt.Println(GREEN, "Tarea guardada exitosamente! 😃", RESET)
 	time.Sleep(2 * time.Second)
-	ConsoleCleaner()
 }
 
 func ChangeStatusOfTask(scanner *bufio.Reader) {
