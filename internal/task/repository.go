@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	Save(task Task) error
 	GetById(id int) (*Task, error)
-	GetAll() (*[]Task, error)
+	GetAll() ([]Task, error)
 	DeleteById(id int) error
 	UpdateById(id int) error
 }
@@ -42,7 +42,7 @@ func (r *repository) GetById(id int) (*Task, error) {
 	return &task, err
 }
 
-func (r *repository) GetAll() (*[]Task, error) {
+func (r *repository) GetAll() ([]Task, error) {
 	tasks := []Task{}
 
 	err := r.db.Select(&tasks, "SELECT * FROM task")
@@ -51,7 +51,7 @@ func (r *repository) GetAll() (*[]Task, error) {
 		return nil, err
 	}
 
-	return &tasks, nil
+	return tasks, nil
 
 }
 
@@ -66,7 +66,7 @@ func (r *repository) DeleteById(id int) error {
 }
 
 func (r *repository) UpdateById(id int) error {
-	_, err := r.db.Exec("UPDATE task SET completed = 1 WHERE id = $1", id)
+	_, err := r.db.Exec("UPDATE task SET completed = true WHERE id = $1", id)
 
 	if err != nil {
 		return err

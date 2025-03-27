@@ -47,7 +47,7 @@ func (s *Service) DeleteTask(id int) error {
 	return err
 }
 
-func (s *Service) GetPendingTasks() (*[]Task, error) {
+func (s *Service) GetPendingTasks() ([]Task, error) {
 	res, err := s.repo.GetAll()
 
 	return res, err

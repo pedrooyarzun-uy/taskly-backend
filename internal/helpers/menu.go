@@ -3,6 +3,7 @@ package helpers
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -41,12 +42,10 @@ func CreateTaskMenu(scanner *bufio.Reader) {
 	fmt.Println("Ingrese una descripción para la tarea: ")
 	description, _ := scanner.ReadString('\n')
 
-	//Task added
-	tasks.CreateTask(title, description)
 	err := service.AddTask(title, description)
 
 	if err != nil {
-		fmt.Println("Carajo: ", err)
+		log.Fatal("No se pudo agregar la tarea: ", err)
 	}
 	fmt.Println(GREEN, "Tarea guardada exitosamente! 😃", RESET)
 	time.Sleep(2 * time.Second)
@@ -55,7 +54,9 @@ func CreateTaskMenu(scanner *bufio.Reader) {
 func ChangeStatusOfTask(scanner *bufio.Reader) {
 	ConsoleCleaner()
 
-	if !tasks.HasPendingTasks() {
+	pendingTasks, err := service.GetPendingTasks()
+
+	if len(pendingTasks) == 0 {
 		fmt.Println(YELLOW, "No existen tares cargadas en el sistema", RESET)
 		fmt.Println("Regresando al menú...")
 		time.Sleep(2500 * time.Millisecond)
@@ -64,7 +65,7 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 
 	fmt.Println("----Modificar estado de la tarea----")
 
-	for _, val := range tasks.Tasks {
+	for _, val := range pendingTasks {
 
 		if !val.Completed && !val.Deleted {
 			fmt.Printf("ID: %d. Título: %s \n", val.Id, strings.TrimSpace(val.Title))
@@ -75,8 +76,7 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 	fmt.Println("Ingrese el ID de la tarea: ")
 
 	var option int
-
-	_, err := fmt.Scanln(&option)
+	_, err = fmt.Scanln(&option)
 
 	if err != nil {
 		ConsoleCleaner()
@@ -84,9 +84,9 @@ func ChangeStatusOfTask(scanner *bufio.Reader) {
 		return
 	}
 
-	done := tasks.UpdateTask(option)
+	done := service.CompleteTask(option)
 
-	if done {
+	if done == nil {
 		ConsoleCleaner()
 		fmt.Println(GREEN, "Tarea pasada a finalizada con éxito! 😃", RESET)
 		time.Sleep(2 * time.Second)
