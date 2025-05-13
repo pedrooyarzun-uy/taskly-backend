@@ -1,0 +1,81 @@
+package repository
+
+import (
+	"database/sql"
+	"errors"
+	"github.com/jmoiron/sqlx"
+	"todo-app/internal/domain"
+)
+
+type Repository interface {
+	Save(task domain.Task) error
+	GetById(id int) (*domain.Task, error)
+	GetAll() ([]domain.Task, error)
+	DeleteById(id int) error
+	UpdateById(id int) error
+}
+
+type TaskRepository interface {
+	Save(task domain.Task) error
+}
+
+type repository struct {
+	db *sqlx.DB
+}
+
+func NewRepository(db *sqlx.DB) Repository {
+	return &repository{db: db}
+}
+
+func (r *repository) Save(task domain.Task) error {
+	_, err := r.db.Exec("INSERT INTO task (title, description, completed, deleted, created_at) VALUES ($1, $2, $3, $4, $5)", task.Title, task.Description, task.Completed, task.Deleted, task.CreatedAt)
+
+	return err
+}
+
+func (r *repository) GetById(id int) (*domain.Task, error) {
+	task := domain.Task{}
+	err := r.db.Get(&task, "SELECT * FROM task WHERE id = $1", id)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &task, err
+}
+
+func (r *repository) GetAll() ([]domain.Task, error) {
+	tasks := []domain.Task{}
+
+	err := r.db.Select(&tasks, "SELECT * FROM task")
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+
+}
+
+func (r *repository) DeleteById(id int) error {
+	_, err := r.db.Exec("UPDATE task SET deleted = 1 WHERE id = $1", id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *repository) UpdateById(id int) error {
+	_, err := r.db.Exec("UPDATE task SET completed = true WHERE id = $1", id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
