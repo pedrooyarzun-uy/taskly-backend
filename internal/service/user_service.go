@@ -1,13 +1,16 @@
 package service
 
 import (
+	"errors"
 	"time"
 	"todo-app/internal/domain"
+	"todo-app/internal/dto"
+	"todo-app/internal/helpers"
 	"todo-app/internal/repository"
 )
 
 type UserService interface {
-	CreateUser(name string, email string, password string, createdAt time.Time) error
+	CreateUser(usr dto.CreateUserRequest) error
 }
 
 type userService struct {
@@ -18,12 +21,20 @@ func NewUserService(r repository.UserRepository) UserService {
 	return &userService{repo: r}
 }
 
-func (s *userService) CreateUser(name string, email string, password string, createAt time.Time) error {
+func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
+
+	password, _ := helpers.HashPassword(usr.Password)
+
 	user := domain.User{
-		Name:      name,
-		Email:     email,
+		Name:      usr.Name,
+		Email:     usr.Email,
 		Password:  password,
-		CreatedAt: createAt,
+		CreatedAt: time.Now(),
+	}
+
+	if s.repo.UserExists(usr.Email) {
+		err := errors.New("el usuario ya existe en el sistema")
+		return err
 	}
 
 	err := s.repo.CreateUser(user)
