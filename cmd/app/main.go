@@ -1,19 +1,18 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
-	"os"
 	"path/filepath"
-	"time"
 	"todo-app/internal/db"
-	"todo-app/internal/helpers"
+	"todo-app/internal/repository"
+	"todo-app/internal/routes"
+	"todo-app/internal/service"
 )
 
 func main() {
-	//Used for loading .env
+
 	envPath := filepath.Join("../../", ".env")
 	err := godotenv.Load(envPath)
 
@@ -22,43 +21,14 @@ func main() {
 	}
 
 	db.Init()
-	helpers.InitServices()
 
-Loop:
-	for {
-		helpers.ConsoleCleaner()
-		scanner := bufio.NewReader(os.Stdin)
-		helpers.Menu()
+	repo := repository.NewUserRepository(db.DB)
+	s := service.NewUserService(repo)
 
-		var option string
-		_, err = fmt.Scanln(&option)
+	r := gin.Default()
+	api := r.Group("/api")
+	routes.RegisterUserRoutes(api, s)
 
-		if err != nil {
-			helpers.ConsoleCleaner()
-			fmt.Println("No se pudo leer la opcion. Ingrese otra para continuar")
-			time.Sleep(2 * time.Second)
-			helpers.ConsoleCleaner()
-			continue
-		}
+	r.Run()
 
-		switch option {
-		case "1":
-			helpers.CreateTaskMenu(scanner)
-		case "2":
-			helpers.ChangeStatusOfTask(scanner)
-		case "3":
-			helpers.DeleteTask(scanner)
-		case "4":
-			helpers.GetAllTasks()
-		case "5":
-			break Loop
-		default:
-			helpers.ConsoleCleaner()
-			fmt.Println("La opción no es valida. Será redirigido al menu para continuar")
-			time.Sleep(2 * time.Second)
-			helpers.ConsoleCleaner()
-			continue
-		}
-
-	}
 }
