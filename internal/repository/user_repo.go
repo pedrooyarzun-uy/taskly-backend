@@ -20,13 +20,22 @@ func NewUserRepository(db *sqlx.DB) UserRepository {
 }
 
 func (r *userRepository) CreateUser(user domain.User) error {
+	sql := `INSERT INTO Users (name, email, password, deleted, created_at) VALUES (?,?,?,?,?)`
+
+	_, err := r.db.Exec(sql)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
+
 }
 
 func (r *userRepository) GetAllPendingTasks(userId int) ([]domain.Task, error) {
 	tasks := []domain.Task{}
 
-	err := r.db.Select(&tasks, "SELECT * FROM task WHERE user_id = $1 AND completed = 0", userId)
+	err := r.db.Select(&tasks, "SELECT * FROM task WHERE user_id = $1 AND completed = false", userId)
 
 	if err != nil {
 		return nil, err
