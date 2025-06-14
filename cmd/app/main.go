@@ -26,8 +26,9 @@ func main() {
 
 	db.Init()
 
-	repo := repository.NewUserRepository(db.DB)
-	s := service.NewUserService(repo)
+	ur := repository.NewUserRepository(db.DB)
+	vr := repository.NewVerificationRepository(db.DB)
+	s := service.NewUserService(ur, vr)
 
 	r := gin.Default()
 

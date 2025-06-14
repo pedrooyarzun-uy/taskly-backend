@@ -6,5 +6,5 @@ type EmailVerification struct {
 	Token     string    `db:"uuid"`
 	UserId    int       `db:"user_id"`
 	ExpiresAt time.Time `db:"expires_at"`
-	used      bool      `db:"used"`
+	Used      bool      `db:"used"`
 }

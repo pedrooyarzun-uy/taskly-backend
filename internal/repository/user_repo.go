@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"todo-app/internal/domain"
@@ -11,6 +12,7 @@ type UserRepository interface {
 	GetAllPendingTasks(id int) ([]domain.Task, error)
 	GetAllTasks(id int) ([]domain.Task, error)
 	UserExists(email string) bool
+	GetUserByEmail(email string) (*domain.User, error)
 }
 
 type userRepository struct {
@@ -68,4 +70,19 @@ func (r *userRepository) UserExists(email string) bool {
 	}
 
 	return res == 1
+}
+
+func (r *userRepository) GetUserByEmail(email string) (*domain.User, error) {
+	user := domain.User{}
+
+	err := r.db.Get(&user, "SELECT * FROM users WHERE email = $1", email)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }

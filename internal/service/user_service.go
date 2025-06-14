@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"github.com/google/uuid"
 	"time"
 	"todo-app/internal/domain"
 	"todo-app/internal/dto"
@@ -14,14 +16,32 @@ type UserService interface {
 }
 
 type userService struct {
-	repo repository.UserRepository
+	ur repository.UserRepository
+	vr repository.VerificationRepository
 }
 
-func NewUserService(r repository.UserRepository) UserService {
-	return &userService{repo: r}
+func NewUserService(
+	ur repository.UserRepository,
+	vr repository.VerificationRepository,
+) UserService {
+	return &userService{
+		ur, vr,
+	}
 }
 
 func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
+	res, err := s.ur.GetUserByEmail(usr.Email)
+
+	if err != nil {
+		fmt.Println(usr.Email)
+		fmt.Println("ENTRE ACAAA")
+		return err
+	}
+
+	if res != nil {
+		err := errors.New("el usuario ya existe en el sistema")
+		return err
+	}
 
 	password, _ := helpers.HashPassword(usr.Password)
 
@@ -32,12 +52,22 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 		CreatedAt: time.Now(),
 	}
 
-	if s.repo.UserExists(usr.Email) {
-		err := errors.New("el usuario ya existe en el sistema")
-		return err
+	err = s.ur.CreateUser(user)
+
+	res, err = s.ur.GetUserByEmail(usr.Email)
+
+	token := uuid.New().String()
+	ev := domain.EmailVerification{
+		Token:     token,
+		UserId:    res.Id,
+		ExpiresAt: time.Now(),
+		Used:      false,
 	}
 
-	err := s.repo.CreateUser(user)
+	err = s.vr.Save(&ev)
+
+	link := "http://localhost:8080/user/verify?token=" + token
+	helpers.SendMail(user.Email, "Verifica tu cuenta!", "Necesitamos que verifiques tu cuenta! Ingresa a: "+link)
 
 	return err
 }
