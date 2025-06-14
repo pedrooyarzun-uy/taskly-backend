@@ -23,7 +23,7 @@ func NewUserRepository(db *sqlx.DB) UserRepository {
 
 func (r *userRepository) CreateUser(user domain.User) error {
 
-	_, err := r.db.Exec(`INSERT INTO Users (name, email, password, deleted, created_at) VALUES ($1,$2,$3,$4,$5)`, user.Name, user.Email, user.Password, true, user.CreatedAt)
+	_, err := r.db.Exec(`INSERT INTO Users (name, email, password, deleted, created_at) VALUES ($1,$2,$3,$4,$5)`, user.Name, user.Email, user.Password, false, user.CreatedAt)
 
 	if err != nil {
 		return err
