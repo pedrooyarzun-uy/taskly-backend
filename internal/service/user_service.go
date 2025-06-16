@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/google/uuid"
 	"time"
 	"todo-app/internal/domain"
@@ -13,6 +12,7 @@ import (
 
 type UserService interface {
 	CreateUser(usr dto.CreateUserRequest) error
+	VerifyUser(token string) error
 }
 
 type userService struct {
@@ -33,8 +33,6 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 	res, err := s.ur.GetUserByEmail(usr.Email)
 
 	if err != nil {
-		fmt.Println(usr.Email)
-		fmt.Println("ENTRE ACAAA")
 		return err
 	}
 
@@ -60,14 +58,18 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 	ev := domain.EmailVerification{
 		Token:     token,
 		UserId:    res.Id,
-		ExpiresAt: time.Now(),
+		ExpiresAt: time.Now().Add(time.Minute * time.Duration(5)),
 		Used:      false,
 	}
 
 	err = s.vr.Save(&ev)
 
-	link := "http://localhost:8080/user/verify?token=" + token
-	helpers.SendMail(user.Email, "Verifica tu cuenta!", "Necesitamos que verifiques tu cuenta! Ingresa a: "+link)
+	link := "<a href='http://localhost:8080/user/verify?token=" + token + "'>" + "Click aqui" + "</a>"
+	err = helpers.SendMail(user.Email, "Verifica tu cuenta!", "Necesitamos que verifiques tu cuenta! Ingresa a: "+link)
 
 	return err
+}
+
+func (s *userService) VerifyUser(token string) error {
+	return s.vr.MarkAsUsed(token)
 }

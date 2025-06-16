@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"todo-app/internal/dto"
 	"todo-app/internal/service"
@@ -20,13 +19,23 @@ func RegisterUserRoutes(r *gin.RouterGroup, s service.UserService) {
 		err := s.CreateUser(req)
 
 		if err != nil {
-
-			fmt.Println(err)
 			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(200, gin.H{"exitoso": "funciono bien"})
+		c.JSON(200, gin.H{"message": "ok"})
+	})
 
+	r.GET("/verify-user", func(c *gin.Context) {
+		token := c.Query("token")
+
+		err := s.VerifyUser(token)
+
+		if err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{"message": "ok"})
 	})
 }
