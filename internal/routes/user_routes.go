@@ -50,7 +50,7 @@ func RegisterUserRoutes(r *gin.RouterGroup, s service.UserService) {
 		token, err := s.SignIn(req)
 
 		if err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
+			c.JSON(401, gin.H{"error": err.Error()})
 			return
 		}
 
