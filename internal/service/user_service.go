@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	CreateUser(usr dto.CreateUserRequest) error
 	VerifyUser(token string) error
+	SignIn(usr dto.SignInRequest) (string, error)
 }
 
 type userService struct {
@@ -72,4 +73,20 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 
 func (s *userService) VerifyUser(token string) error {
 	return s.vr.MarkAsUsed(token)
+}
+
+func (s *userService) SignIn(req dto.SignInRequest) (string, error) {
+	usr, err := s.ur.GetUserByEmail(req.Email)
+
+	if err != nil || usr == nil || !helpers.VerifyPassword(req.Password, usr.Password) {
+		return "", errors.New("Usuario y/o contraseña incorrecto")
+	}
+
+	token, err := helpers.GenerateJWT(usr.Id)
+
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
