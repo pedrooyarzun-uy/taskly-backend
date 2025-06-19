@@ -79,7 +79,7 @@ func (s *userService) SignIn(req dto.SignInRequest) (string, error) {
 	usr, err := s.ur.GetUserByEmail(req.Email)
 
 	if err != nil || usr == nil || !helpers.VerifyPassword(req.Password, usr.Password) {
-		return "", errors.New("Usuario y/o contraseña incorrecto")
+		return "", errors.New("Incorrect email or password")
 	}
 
 	token, err := helpers.GenerateJWT(usr.Id)
