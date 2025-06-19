@@ -1,55 +1,52 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
-	"todo-app/internal/helpers"
-	"todo-app/internal/tasks"
+	"todo-app/internal/db"
+	"todo-app/internal/repository"
+	"todo-app/internal/routes"
+	"todo-app/internal/service"
 )
 
 func main() {
-	tasks.Init()
-Loop:
-	for {
 
-		//Scanner works for reading sentences not only one word
-		scanner := bufio.NewReader(os.Stdin)
+	envPath := filepath.Join("../../", ".env")
+	err := godotenv.Load(envPath)
 
-		helpers.ConsoleCleaner()
-		helpers.Menu()
-
-		var option string
-
-		_, err := fmt.Scanln(&option)
-
-		if err != nil {
-			helpers.ConsoleCleaner()
-			fmt.Println("No se pudo leer la opcion. Ingrese otra para continuar")
-			time.Sleep(2 * time.Second)
-			helpers.ConsoleCleaner()
-			continue
-		}
-
-		switch option {
-		case "1":
-			helpers.CreateTaskMenu(scanner)
-		case "2":
-			helpers.ChangeStatusOfTask(scanner)
-		case "3":
-			helpers.DeleteTask(scanner)
-		case "4":
-			helpers.GetAllTasks()
-		case "5":
-			break Loop
-		default:
-			helpers.ConsoleCleaner()
-			fmt.Println("La opción no es valida. Será redirigido al menu para continuar")
-			time.Sleep(2 * time.Second)
-			helpers.ConsoleCleaner()
-			continue
-		}
-
+	if err != nil {
+		log.Fatal(".env variables could't load", err)
 	}
+
+	db.Init()
+
+	ur := repository.NewUserRepository(db.DB)
+	vr := repository.NewVerificationRepository(db.DB)
+	s := service.NewUserService(ur, vr)
+
+	r := gin.Default()
+
+	origins := strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
+
+	r.Use(cors.New(cors.Config{
+
+		AllowOrigins:     origins,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
+	api := r.Group("/api")
+	routes.RegisterUserRoutes(api, s)
+
+	r.Run()
+
 }
