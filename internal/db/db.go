@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"log"
@@ -14,18 +13,11 @@ var once sync.Once
 
 func Init() {
 	once.Do(func() {
-		host := os.Getenv("DB_URL")
-		dbName := os.Getenv("DB_NAME")
-		username := os.Getenv("DB_USERNAME")
-		password := os.Getenv("DB_PASSWORD")
-		port := os.Getenv("DB_PORT")
 
-		conString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require",
-			host, port, username, password, dbName,
-		)
+		dsn := os.Getenv("PSQL_URL")
 
 		var err error
-		DB, err = sqlx.Open("postgres", conString)
+		DB, err = sqlx.Open("postgres", dsn)
 
 		if err != nil {
 			log.Fatal("String connection failed: ", err)
