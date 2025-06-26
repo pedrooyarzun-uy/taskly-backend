@@ -50,7 +50,7 @@ func main() {
 
 	api := r.Group("/api")
 	routes.RegisterUserRoutes(api, s)
-
+	log.Println("PORT desde Railway:", os.Getenv("PORT"))
 	r.Run()
 
 }
