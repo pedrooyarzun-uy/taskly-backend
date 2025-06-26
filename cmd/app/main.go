@@ -18,7 +18,11 @@ import (
 func main() {
 
 	envPath := filepath.Join("../../", ".env")
-	err := godotenv.Load(envPath)
+	var err error
+
+	if os.Getenv("RAILWAYS_ENVIRONMENT") == "" {
+		err = godotenv.Load(envPath)
+	}
 
 	if err != nil {
 		log.Fatal(".env variables could't load", err)
