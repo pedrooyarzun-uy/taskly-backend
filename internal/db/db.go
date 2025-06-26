@@ -20,7 +20,7 @@ func Init() {
 		password := os.Getenv("DB_PASSWORD")
 		port := os.Getenv("DB_PORT")
 
-		conString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		conString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require",
 			host, port, username, password, dbName,
 		)
 
