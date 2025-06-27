@@ -66,7 +66,7 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 
 	err = s.vr.Save(&ev)
 
-	link := "<a href='" + os.Getenv("ALLOWED_ORIGINS") + "/check-email?token=" + token + "'>" + "Click aqui" + "</a>"
+	link := "<a href='" + os.Getenv("ALLOWED_ORIGINS") + "/verify-account?token=" + token + "'>" + "Click aqui" + "</a>"
 	err = helpers.SendMail(user.Email, "Verifica tu cuenta!", "Necesitamos que verifiques tu cuenta! Ingresa a: "+link)
 
 	return err
