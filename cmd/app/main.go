@@ -46,6 +46,8 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	r.SetTrustedProxies(nil)
+
 	api := r.Group("/api")
 	routes.RegisterUserRoutes(api, s)
 
