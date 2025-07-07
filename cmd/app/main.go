@@ -1,18 +1,19 @@
 package main
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 	"todo-app/internal/db"
+	"todo-app/internal/middlewares"
 	"todo-app/internal/repository"
 	"todo-app/internal/routes"
 	"todo-app/internal/service"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -36,17 +37,19 @@ func main() {
 
 	r := gin.Default()
 
-	origins := strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
-
 	r.Use(cors.New(cors.Config{
 
-		AllowOrigins:     origins,
+		AllowOrigins:     []string{os.Getenv("ALLOWED_ORIGINS")},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	r.Use(middlewares.VerifyToken())
+
+	r.SetTrustedProxies(nil)
 
 	api := r.Group("/api")
 	routes.RegisterUserRoutes(api, s)
