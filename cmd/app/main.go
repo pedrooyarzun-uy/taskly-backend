@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"time"
 	"todo-app/internal/db"
+	"todo-app/internal/middlewares"
 	"todo-app/internal/repository"
 	"todo-app/internal/routes"
 	"todo-app/internal/service"
@@ -45,6 +46,8 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	r.Use(middlewares.VerifyToken())
 
 	r.SetTrustedProxies(nil)
 
