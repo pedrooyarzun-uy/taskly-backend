@@ -33,7 +33,10 @@ func main() {
 
 	ur := repository.NewUserRepository(db.DB)
 	vr := repository.NewVerificationRepository(db.DB)
-	s := service.NewUserService(ur, vr)
+	us := service.NewUserService(ur, vr)
+
+	tr := repository.NewTaskRepository(db.DB)
+	ts := service.NewTaskService(tr)
 
 	r := gin.Default()
 
@@ -52,8 +55,8 @@ func main() {
 	r.SetTrustedProxies(nil)
 
 	api := r.Group("/api")
-	routes.RegisterUserRoutes(api, s)
-
+	routes.RegisterUserRoutes(api, us)
+	routes.RegisterTaskRoutes(api, ts)
 	r.Run(":" + os.Getenv("GIN_PORT"))
 
 }
