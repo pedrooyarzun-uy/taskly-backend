@@ -2,3 +2,4 @@
 /cmd/app/main.exe
 /.idea
 .env
+/.vscode
