@@ -2,13 +2,14 @@ package service
 
 import (
 	"errors"
-	"github.com/google/uuid"
 	"os"
 	"time"
 	"todo-app/internal/domain"
 	"todo-app/internal/dto"
 	"todo-app/internal/helpers"
 	"todo-app/internal/repository"
+
+	"github.com/google/uuid"
 )
 
 type UserService interface {
