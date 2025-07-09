@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,7 @@ func VerifyToken() gin.HandlerFunc {
 		}
 
 		if token != os.Getenv("AUTHORIZATION_TOKEN") {
+			fmt.Println("Tamo activo mi gente")
 			ctx.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized request"})
 			return
 		}
