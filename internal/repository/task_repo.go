@@ -23,7 +23,7 @@ func NewTaskRepository(db *sqlx.DB) TaskRepository {
 }
 
 func (r *taskRepository) CreateTask(task domain.Task) error {
-	_, err := r.db.Exec("INSERT INTO task (title, description, completed, deleted, user) VALUES ($1, $2, $3, $4, $5)", task.Title, task.Description, task.Completed, task.Deleted, task.User)
+	_, err := r.db.Exec("INSERT INTO Task (title, description, completed, deleted, user_id, category_id) VALUES ($1, $2, $3, $4, $5, $6)", task.Title, task.Description, task.Completed, task.Deleted, task.User, task.Category)
 
 	if err != nil {
 		return err
