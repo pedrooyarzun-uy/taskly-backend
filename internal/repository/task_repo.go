@@ -1,14 +1,17 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"todo-app/internal/domain"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type TaskRepository interface {
 	CreateTask(task domain.Task) error
 	DeleteById(id int) error
 	UpdateById(id int) error
+	GetAllTasks(usr int) ([]domain.Task, error)
+	GetAllPendingTasks(usr int) ([]domain.Task, error)
 }
 
 type taskRepository struct {
@@ -30,7 +33,7 @@ func (r *taskRepository) CreateTask(task domain.Task) error {
 }
 
 func (r *taskRepository) DeleteById(id int) error {
-	_, err := r.db.Exec("UPDATE task SET deleted = 1 WHERE id = $1", id)
+	_, err := r.db.Exec("UPDATE task SET deleted = true WHERE id = $1", id)
 
 	if err != nil {
 		return err
@@ -47,4 +50,28 @@ func (r *taskRepository) UpdateById(id int) error {
 	}
 
 	return nil
+}
+
+func (r *taskRepository) GetAllPendingTasks(usr int) ([]domain.Task, error) {
+	tasks := []domain.Task{}
+
+	err := r.db.Select(&tasks, "SELECT * FROM task WHERE user_id = $1 AND completed = false", usr)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
+
+func (r *taskRepository) GetAllTasks(usr int) ([]domain.Task, error) {
+	tasks := []domain.Task{}
+
+	err := r.db.Select(&tasks, "SELECT * FROM task WHERE user_id = $1", usr)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
 }
