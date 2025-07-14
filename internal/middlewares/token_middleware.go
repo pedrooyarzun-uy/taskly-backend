@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"os"
 	"todo-app/internal/helpers"
 
@@ -19,7 +18,6 @@ func VerifyToken() gin.HandlerFunc {
 		}
 
 		if token != os.Getenv("AUTHORIZATION_TOKEN") {
-			fmt.Println("Tamo activo mi gente")
 			ctx.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized request"})
 			return
 		}
@@ -33,14 +31,22 @@ func VerifyJWT() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.GetHeader("Authorization")
 
-		isValid := helpers.VerifyJWT(token)
+		claims, err := helpers.ParseJWT(token)
 
-		if !isValid {
+		if err != nil {
 			ctx.AbortWithStatusJSON(401, gin.H{"error": "Session expired"})
 			return
 		}
 
-		ctx.Next()
+		sub, ok := claims["sub"].(string)
 
+		if !ok {
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "There is "})
+			return
+		}
+
+		ctx.Set("userID", sub)
+
+		ctx.Next()
 	}
 }

@@ -2,12 +2,15 @@ package routes
 
 import (
 	"todo-app/internal/dto"
+	"todo-app/internal/middlewares"
 	"todo-app/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterTaskRoutes(r *gin.RouterGroup, s service.TaskService) {
+
+	r.Use(middlewares.VerifyJWT())
 
 	r.POST("/create-task", func(ctx *gin.Context) {
 		var req dto.CreateTaskRequest

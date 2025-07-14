@@ -11,7 +11,7 @@ import (
 func GenerateJWT(userId int) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"sub": userId,
+			"sub": strconv.Itoa(userId),
 			"exp": time.Now().Add(time.Hour * 24).Unix(),
 			"iat": time.Now().Unix(),
 		})
@@ -19,40 +19,21 @@ func GenerateJWT(userId int) (string, error) {
 
 }
 
-func VerifyJWT(tokenString string) bool {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func ParseJWT(tokenStr string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SIGNATURE")), nil
 	})
 
 	if err != nil {
-		if err != nil {
-			return false
-		}
+		return nil, err
 	}
 
-	if !token.Valid {
-		return false
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if !ok || !token.Valid {
+		return nil, err
 	}
 
-	return true
-}
+	return claims, nil
 
-func GetSubject(tokenString string) int {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWT_SIGNATURE")), nil
-	})
-
-	if err != nil {
-		return 0
-	}
-
-	iss, err := token.Claims.GetSubject()
-
-	if err != nil {
-		return 0
-	}
-
-	res, _ := strconv.Atoi(iss)
-
-	return res
 }
