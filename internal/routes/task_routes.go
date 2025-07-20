@@ -75,4 +75,31 @@ func RegisterTaskRoutes(r *gin.RouterGroup, s service.TaskService) {
 
 		ctx.JSON(200, gin.H{"message": "ok"})
 	})
+
+	r.POST("/delete-task", func(ctx *gin.Context) {
+		var req dto.DeleteTaskRequest
+
+		if err := ctx.BindJSON(&req); err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		val, _ := ctx.Get("userID")
+		userID, ok := val.(int)
+
+		if !ok {
+			ctx.JSON(400, gin.H{"error": "something went wrong"})
+			return
+		}
+
+		err := s.DeleteTask(req, userID)
+
+		if err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(200, gin.H{"message": "ok"})
+
+	})
 }

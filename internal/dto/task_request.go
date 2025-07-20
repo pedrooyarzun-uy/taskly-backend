@@ -9,3 +9,7 @@ type CreateTaskRequest struct {
 type CompleteTaskRequest struct {
 	Id int `json:"id" binding:"required"`
 }
+
+type DeleteTaskRequest struct {
+	Id int `json:"id" binding:"required"`
+}

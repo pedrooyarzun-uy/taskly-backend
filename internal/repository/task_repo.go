@@ -8,7 +8,7 @@ import (
 
 type TaskRepository interface {
 	CreateTask(task domain.Task) error
-	DeleteById(id int) error
+	DeleteById(id int, userId int) error
 	CompleteTask(taskId int, userId int) error
 	GetAllTasks(usr int) ([]domain.Task, error)
 	GetAllPendingTasks(usr int) ([]domain.Task, error)
@@ -32,8 +32,8 @@ func (r *taskRepository) CreateTask(task domain.Task) error {
 	return nil
 }
 
-func (r *taskRepository) DeleteById(id int) error {
-	_, err := r.db.Exec("UPDATE task SET deleted = true WHERE id = $1", id)
+func (r *taskRepository) DeleteById(id int, userId int) error {
+	_, err := r.db.Exec("UPDATE task SET deleted = true WHERE id = $1 AND user_id = $2", id, userId)
 
 	if err != nil {
 		return err
