@@ -12,6 +12,8 @@ type TaskRepository interface {
 	CompleteTask(taskId int, userId int) error
 	GetAllTasks(usr int) ([]domain.Task, error)
 	GetAllPendingTasks(usr int) ([]domain.Task, error)
+	GetById(id int) (domain.Task, error)
+	ModifyById(task domain.Task, usr int) error
 }
 
 type taskRepository struct {
@@ -74,4 +76,22 @@ func (r *taskRepository) GetAllTasks(usr int) ([]domain.Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func (r *taskRepository) GetById(id int) (domain.Task, error) {
+	var task domain.Task
+
+	err := r.db.Get(&task, "SELECT * FROM task WHERE id = $1", id)
+
+	if err != nil {
+		return domain.Task{}, err
+	}
+
+	return task, nil
+}
+
+func (r *taskRepository) ModifyById(task domain.Task, usr int) error {
+	_, err := r.db.Exec("UPDATE task SET title = $1, description = $2, category_id = $3 WHERE id = $4 AND user_id = $5", task.Title, task.Description, task.Category, task.Id, usr)
+
+	return err
 }
