@@ -8,6 +8,7 @@ import (
 
 type TaskService interface {
 	CreateTask(task dto.CreateTaskRequest, userId int) error
+	CompleteTask(task dto.CompleteTaskRequest, userId int) error
 }
 
 type taskService struct {
@@ -36,5 +37,10 @@ func (s *taskService) CreateTask(task dto.CreateTaskRequest, userId int) error {
 	err := s.tr.CreateTask(domTask)
 
 	return err
+}
 
+func (s *taskService) CompleteTask(task dto.CompleteTaskRequest, userId int) error {
+	err := s.tr.CompleteTask(task.Id, userId)
+
+	return err
 }

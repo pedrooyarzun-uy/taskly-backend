@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"os"
+	"strconv"
 	"todo-app/internal/helpers"
 
 	"github.com/gin-gonic/gin"
@@ -41,11 +42,17 @@ func VerifyJWT() gin.HandlerFunc {
 		sub, ok := claims["sub"].(string)
 
 		if !ok {
-			ctx.AbortWithStatusJSON(401, gin.H{"error": "There is "})
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "There is something wrong"})
 			return
 		}
 
-		ctx.Set("userID", sub)
+		userID, err := strconv.Atoi(sub)
+
+		if err != nil {
+			ctx.AbortWithStatusJSON(401, gin.H{"error": "Something went wrong"})
+		}
+
+		ctx.Set("userID", userID)
 
 		ctx.Next()
 	}

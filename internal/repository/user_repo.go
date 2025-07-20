@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"todo-app/internal/domain"
 
 	"github.com/jmoiron/sqlx"
@@ -40,7 +39,6 @@ func (r *userRepository) UserExists(email string) bool {
 	err := r.db.Get(&res, "SELECT COUNT(*) FROM users WHERE email = $1", email)
 
 	if err != nil {
-		fmt.Println(err)
 		return false
 	}
 
