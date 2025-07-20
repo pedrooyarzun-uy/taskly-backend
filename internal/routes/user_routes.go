@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"todo-app/internal/dto"
 	"todo-app/internal/service"
+
+	"github.com/gin-gonic/gin"
 )
 
 func RegisterUserRoutes(r *gin.RouterGroup, s service.UserService) {
