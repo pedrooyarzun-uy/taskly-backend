@@ -133,4 +133,48 @@ func RegisterTaskRoutes(r *gin.RouterGroup, s service.TaskService) {
 
 		ctx.JSON(200, gin.H{"message": "ok"})
 	})
+
+	r.GET("/get-tasks", func(ctx *gin.Context) {
+		val, _ := ctx.Get("userID")
+		userID, ok := val.(int)
+
+		if !ok {
+			ctx.JSON(400, gin.H{"error": "something went wrong"})
+			return
+		}
+
+		tasks, err := s.GetPendingTasks(userID)
+
+		if err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(200, gin.H{
+			"message": "ok",
+			"tasks":   tasks,
+		})
+	})
+
+	r.GET("get-all-tasks", func(ctx *gin.Context) {
+		val, _ := ctx.Get("userID")
+		userID, ok := val.(int)
+
+		if !ok {
+			ctx.JSON(400, gin.H{"error": "Something went wrong"})
+			return
+		}
+
+		tasks, err := s.GetAllTasks(userID)
+
+		if err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(200, gin.H{
+			"message": "ok",
+			"tasks":   tasks,
+		})
+	})
 }
