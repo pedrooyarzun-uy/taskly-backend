@@ -37,6 +37,9 @@ func main() {
 	tr := repository.NewTaskRepository(db.DB)
 	ts := service.NewTaskService(tr)
 
+	cr := repository.NewCategoryRepository(db.DB)
+	cs := service.NewCategoryService(cr)
+
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
@@ -54,6 +57,7 @@ func main() {
 	api := r.Group("/api")
 	routes.RegisterUserRoutes(api, us)
 	routes.RegisterTaskRoutes(api, ts)
+	routes.RegisterCategoriesRoutes(api, cs)
 	r.Run(":" + os.Getenv("GIN_PORT"))
 
 }
