@@ -8,6 +8,7 @@ import (
 
 type CategoryRepository interface {
 	CreateCategory(cat domain.Category) error
+	DeleteCategory(cat domain.Category) error
 }
 
 type categoryRepository struct {

@@ -8,6 +8,7 @@ import (
 
 type CategoryService interface {
 	CreateCategory(req dto.CreateCategoryRequest, userId int) error
+	DeleteCategory(req dto.DeleteCategoryRequest, userId int) error
 }
 
 type categoryService struct {
@@ -30,4 +31,13 @@ func (s *categoryService) CreateCategory(req dto.CreateCategoryRequest, userId i
 	}
 
 	return s.cr.CreateCategory(cat)
+}
+
+func (s *categoryService) DeleteCategory(req dto.DeleteCategoryRequest, userId int) error {
+	cat := domain.Category{
+		Id:   req.Id,
+		User: userId,
+	}
+
+	return s.cr.DeleteCategory(cat)
 }

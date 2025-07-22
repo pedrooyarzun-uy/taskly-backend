@@ -42,4 +42,25 @@ func RegisterCategoriesRoutes(r *gin.RouterGroup, s service.CategoryService) {
 
 		ctx.JSON(200, gin.H{"message": "ok"})
 	})
+
+	r.DELETE("/delete-category", func(ctx *gin.Context) {
+		var req dto.DeleteCategoryRequest
+
+		if err := ctx.BindJSON(&req); err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		val, _ := ctx.Get("userID")
+		userID, _ := val.(int)
+
+		err := s.DeleteCategory(req, userID)
+
+		if err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(200, gin.H{"message": "ok"})
+	})
 }
