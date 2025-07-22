@@ -11,6 +11,8 @@ type TaskService interface {
 	CompleteTask(task dto.CompleteTaskRequest, userId int) error
 	DeleteTask(task dto.DeleteTaskRequest, userId int) error
 	ModifyTask(task dto.ModifyTaskRequest, userId int) error
+	GetAllTasks(userId int) ([]domain.Task, error)
+	GetPendingTasks(userId int) ([]domain.Task, error)
 }
 
 type taskService struct {
@@ -76,4 +78,12 @@ func (s *taskService) ModifyTask(t dto.ModifyTaskRequest, userId int) error {
 
 	return err
 
+}
+
+func (s *taskService) GetAllTasks(userId int) ([]domain.Task, error) {
+	return s.tr.GetAllTasks(userId)
+}
+
+func (s *taskService) GetPendingTasks(userId int) ([]domain.Task, error) {
+	return s.tr.GetPendingTasks(userId)
 }

@@ -1,6 +1,8 @@
 package domain
 
 type Category struct {
-	id   int    `db:"id"`
-	name string `db:"name"`
+	Id      int    `db:"id"`
+	Name    string `db:"name"`
+	User    int    `db:"user_id"`
+	Deleted bool   `db:"deleted"`
 }
