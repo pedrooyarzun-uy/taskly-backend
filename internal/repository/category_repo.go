@@ -9,6 +9,8 @@ import (
 type CategoryRepository interface {
 	CreateCategory(cat domain.Category) error
 	DeleteCategory(cat domain.Category) error
+	GetById(id int, userId int) (domain.Category, error)
+	ModifyCategory(cat domain.Category) error
 }
 
 type categoryRepository struct {
@@ -47,4 +49,17 @@ func (r *categoryRepository) DeleteCategory(cat domain.Category) error {
 	}
 
 	return nil
+}
+
+func (r *categoryRepository) GetById(id int, userId int) (domain.Category, error) {
+	var cat domain.Category
+
+	err := r.db.Get(&cat, "SELECT * FROM category WHERE id = $1 AND user_id = $2", id, userId)
+
+	if err != nil {
+
+		return domain.Category{}, err
+	}
+
+	return cat, nil
 }
