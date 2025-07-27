@@ -8,12 +8,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateJWT(userId int) (string, error) {
+func GenerateJWT(userId int, name string) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"sub": strconv.Itoa(userId),
-			"exp": time.Now().Add(time.Hour * 24).Unix(),
-			"iat": time.Now().Unix(),
+			"sub":  strconv.Itoa(userId),
+			"exp":  time.Now().Add(time.Hour * 24).Unix(),
+			"iat":  time.Now().Unix(),
+			"name": name,
 		})
 	return t.SignedString([]byte(os.Getenv("JWT_SIGNATURE")))
 
