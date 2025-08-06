@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"todo-app/internal/domain"
+	"todo-app/internal/dto"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -12,7 +13,7 @@ type TaskRepository interface {
 	DeleteById(id int, userId int) error
 	CompleteTask(taskId int, userId int) error
 	GetAllTasks(usr int) ([]domain.Task, error)
-	GetPendingTasks(usr int) ([]domain.Task, error)
+	GetPendingTasks(usr int) ([]dto.TaskWithCategory, error)
 	GetById(id int) (domain.Task, error)
 	ModifyById(task domain.Task, usr int) error
 }
@@ -55,10 +56,15 @@ func (r *taskRepository) CompleteTask(taskId int, userId int) error {
 	return nil
 }
 
-func (r *taskRepository) GetPendingTasks(usr int) ([]domain.Task, error) {
-	tasks := []domain.Task{}
+func (r *taskRepository) GetPendingTasks(usr int) ([]dto.TaskWithCategory, error) {
+	tasks := []dto.TaskWithCategory{}
 
-	err := r.db.Select(&tasks, "SELECT * FROM task WHERE user_id = $1 AND completed = false AND deleted = false", usr)
+	err := r.db.Select(&tasks, `SELECT t.*, c.name AS category_name
+		FROM task t 
+		JOIN category c ON c.id = t.category_id
+		WHERE t.user_id = $1 AND t.completed = false AND t.deleted = false AND c.deleted = false
+		ORDER BY c.name ASC
+	`, usr)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

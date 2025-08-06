@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"todo-app/internal/domain"
 
 	"github.com/jmoiron/sqlx"
@@ -11,6 +12,7 @@ type CategoryRepository interface {
 	DeleteCategory(cat domain.Category) error
 	GetById(id int, userId int) (domain.Category, error)
 	ModifyCategory(cat domain.Category) error
+	GetAllCategories(userId int) ([]domain.Category, error)
 }
 
 type categoryRepository struct {
@@ -59,6 +61,23 @@ func (r *categoryRepository) GetById(id int, userId int) (domain.Category, error
 	if err != nil {
 
 		return domain.Category{}, err
+	}
+
+	return cat, nil
+}
+
+func (r *categoryRepository) GetAllCategories(userId int) ([]domain.Category, error) {
+
+	var cat []domain.Category
+
+	err := r.db.Select(&cat, "SELECT * FROM category WHERE user_id = $1 AND deleted = false", userId)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return cat, nil
+		}
+
+		return cat, err
 	}
 
 	return cat, nil

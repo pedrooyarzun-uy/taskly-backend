@@ -12,7 +12,7 @@ type TaskService interface {
 	DeleteTask(task dto.DeleteTaskRequest, userId int) error
 	ModifyTask(task dto.ModifyTaskRequest, userId int) error
 	GetAllTasks(userId int) ([]domain.Task, error)
-	GetPendingTasks(userId int) ([]domain.Task, error)
+	GetPendingTasks(userId int) ([]dto.CategoryWithTasks, error)
 }
 
 type taskService struct {
@@ -84,6 +84,41 @@ func (s *taskService) GetAllTasks(userId int) ([]domain.Task, error) {
 	return s.tr.GetAllTasks(userId)
 }
 
-func (s *taskService) GetPendingTasks(userId int) ([]domain.Task, error) {
-	return s.tr.GetPendingTasks(userId)
+func (s *taskService) GetPendingTasks(userId int) ([]dto.CategoryWithTasks, error) {
+	tasks, err := s.tr.GetPendingTasks(userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	categoryMap := make(map[int]*dto.CategoryWithTasks)
+
+	for _, row := range tasks {
+		if _, ok := categoryMap[row.Category]; !ok {
+			categoryMap[row.Category] = &dto.CategoryWithTasks{
+				CategoryID:   row.Category,
+				CategoryName: row.CategoryName,
+				Tasks:        []dto.TaskResponse{},
+			}
+		}
+
+		task := dto.TaskResponse{
+			ID:          row.Id,
+			Title:       row.Title,
+			Description: row.Description,
+			Completed:   row.Completed,
+			Deleted:     row.Deleted,
+		}
+
+		categoryMap[row.Category].Tasks = append(categoryMap[row.Category].Tasks, task)
+	}
+
+	// Convertir el map a slice
+	result := make([]dto.CategoryWithTasks, 0, len(categoryMap))
+	for _, cat := range categoryMap {
+		result = append(result, *cat)
+	}
+
+	return result, nil
+
 }

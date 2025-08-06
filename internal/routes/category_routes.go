@@ -84,4 +84,22 @@ func RegisterCategoriesRoutes(r *gin.RouterGroup, s service.CategoryService) {
 
 		ctx.JSON(200, gin.H{"message": "ok"})
 	})
+
+	r.GET("/get-categories", func(ctx *gin.Context) {
+
+		val, _ := ctx.Get("userID")
+		userID, _ := val.(int)
+
+		cat, err := s.GetCategories(userID)
+
+		if err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(200, gin.H{
+			"message":    "ok",
+			"categories": cat,
+		})
+	})
 }

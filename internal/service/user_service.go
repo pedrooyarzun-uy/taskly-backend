@@ -84,7 +84,7 @@ func (s *userService) SignIn(req dto.SignInRequest) (string, error) {
 		return "", errors.New("Incorrect email or password")
 	}
 
-	token, err := helpers.GenerateJWT(usr.Id)
+	token, err := helpers.GenerateJWT(usr.Id, usr.Name)
 
 	if err != nil {
 		return "", err
