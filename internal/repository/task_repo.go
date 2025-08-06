@@ -62,7 +62,9 @@ func (r *taskRepository) GetPendingTasks(usr int) ([]dto.TaskWithCategory, error
 	err := r.db.Select(&tasks, `SELECT t.*, c.name AS category_name
 		FROM task t 
 		JOIN category c ON c.id = t.category_id
-		WHERE t.user_id = $1 AND t.completed = false AND t.deleted = false AND c.deleted = false`, usr)
+		WHERE t.user_id = $1 AND t.completed = false AND t.deleted = false AND c.deleted = false
+		ORDER BY c.name ASC
+	`, usr)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
