@@ -70,7 +70,7 @@ func (r *categoryRepository) GetAllCategories(userId int) ([]domain.Category, er
 
 	var cat []domain.Category
 
-	err := r.db.Select(&cat, "SELECT * FROM category WHERE user_id = $1", userId)
+	err := r.db.Select(&cat, "SELECT * FROM category WHERE user_id = $1 AND deleted = false", userId)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
