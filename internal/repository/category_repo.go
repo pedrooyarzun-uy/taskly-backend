@@ -12,7 +12,7 @@ type CategoryRepository interface {
 	DeleteCategory(cat domain.Category) error
 	GetById(id int, userId int) (domain.Category, error)
 	ModifyCategory(cat domain.Category) error
-	GetAllCategories(userId int) ([]domain.Category, error)
+	GetAllCategories(userId int) ([]domain.AllCategories, error)
 }
 
 type categoryRepository struct {
@@ -66,11 +66,15 @@ func (r *categoryRepository) GetById(id int, userId int) (domain.Category, error
 	return cat, nil
 }
 
-func (r *categoryRepository) GetAllCategories(userId int) ([]domain.Category, error) {
+func (r *categoryRepository) GetAllCategories(userId int) ([]domain.AllCategories, error) {
 
-	var cat []domain.Category
+	var cat []domain.AllCategories
 
-	err := r.db.Select(&cat, "SELECT * FROM category WHERE user_id = $1 AND deleted = false", userId)
+	err := r.db.Select(&cat, `SELECT c.id, c.name, COUNT(*) as total_tasks 
+		FROM category c 
+		JOIN task t ON c.id = t.category_id
+		WHERE c.user_id = $1 AND c.deleted = false
+		GROUP BY c.id, c.name`, userId)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

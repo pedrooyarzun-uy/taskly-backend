@@ -10,7 +10,7 @@ type CategoryService interface {
 	CreateCategory(req dto.CreateCategoryRequest, userId int) error
 	DeleteCategory(req dto.DeleteCategoryRequest, userId int) error
 	ModifyCategory(req dto.ModifyCategoryRequest, userId int) error
-	GetCategories(userId int) ([]domain.Category, error)
+	GetCategories(userId int) ([]domain.AllCategories, error)
 }
 
 type categoryService struct {
@@ -57,6 +57,6 @@ func (s *categoryService) ModifyCategory(req dto.ModifyCategoryRequest, userId i
 
 }
 
-func (s *categoryService) GetCategories(userId int) ([]domain.Category, error) {
+func (s *categoryService) GetCategories(userId int) ([]domain.AllCategories, error) {
 	return s.cr.GetAllCategories(userId)
 }
