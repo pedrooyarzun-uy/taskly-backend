@@ -70,10 +70,10 @@ func (r *categoryRepository) GetAllCategories(userId int) ([]domain.AllCategorie
 
 	var cat []domain.AllCategories
 
-	err := r.db.Select(&cat, `SELECT c.id, c.name, COUNT(*) as total_tasks 
+	err := r.db.Select(&cat, `SELECT c.id, c.name, COUNT(t.id) as total_tasks 
 		FROM category c 
-		JOIN task t ON c.id = t.category_id
-		WHERE c.user_id = $1 AND c.deleted = false AND t.deleted = false AND t.completed = false
+		LEFT JOIN task t ON c.id = t.category_id AND t.deleted = false AND t.completed = false
+		WHERE c.user_id = $1 AND c.deleted = false
 		GROUP BY c.id, c.name`, userId)
 
 	if err != nil {
