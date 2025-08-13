@@ -44,7 +44,7 @@ func RegisterTaskRoutes(r *gin.RouterGroup, s service.TaskService) {
 		ctx.JSON(200, gin.H{"message": "ok"})
 	})
 
-	r.POST("/complete-task", func(ctx *gin.Context) {
+	r.PUT("/complete-task", func(ctx *gin.Context) {
 		var req dto.CompleteTaskRequest
 
 		if err := ctx.BindJSON(&req); err != nil {
@@ -176,5 +176,37 @@ func RegisterTaskRoutes(r *gin.RouterGroup, s service.TaskService) {
 			"message": "ok",
 			"tasks":   tasks,
 		})
+	})
+
+	r.PUT("incomplete-task", func(ctx *gin.Context) {
+		var req dto.CompleteTaskRequest
+
+		if err := ctx.BindJSON(&req); err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		val, ok := ctx.Get("userID")
+
+		if !ok {
+			ctx.JSON(400, gin.H{"error": "Something went wrong"})
+			return
+		}
+
+		userID, ok := val.(int)
+
+		if !ok {
+			ctx.JSON(400, gin.H{"error": "Something went wrong"})
+			return
+		}
+
+		err := s.IncompleteTask(req, userID)
+
+		if err != nil {
+			ctx.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		ctx.JSON(200, gin.H{"message": "ok"})
 	})
 }
