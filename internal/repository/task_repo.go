@@ -12,6 +12,7 @@ type TaskRepository interface {
 	CreateTask(task domain.Task) error
 	DeleteById(id int, userId int) error
 	CompleteTask(taskId int, userId int) error
+	IncompleteTask(taskId int, userId int) error
 	GetAllTasks(usr int) ([]domain.Task, error)
 	GetPendingTasks(usr int) ([]dto.TaskWithCategory, error)
 	GetById(id int) (domain.Task, error)
@@ -48,6 +49,16 @@ func (r *taskRepository) DeleteById(id int, userId int) error {
 
 func (r *taskRepository) CompleteTask(taskId int, userId int) error {
 	_, err := r.db.Exec("UPDATE task SET completed = true WHERE id = $1 AND user_id = $2", taskId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *taskRepository) IncompleteTask(taskId int, userId int) error {
+	_, err := r.db.Exec("UPDATE task SET completed = false WHERE id = $1 AND user_id = $2", taskId, userId)
 
 	if err != nil {
 		return err

@@ -9,6 +9,7 @@ import (
 type TaskService interface {
 	CreateTask(task dto.CreateTaskRequest, userId int) error
 	CompleteTask(task dto.CompleteTaskRequest, userId int) error
+	IncompleteTask(task dto.CompleteTaskRequest, userId int) error
 	DeleteTask(task dto.DeleteTaskRequest, userId int) error
 	ModifyTask(task dto.ModifyTaskRequest, userId int) error
 	GetAllTasks(userId int) ([]domain.Task, error)
@@ -47,6 +48,10 @@ func (s *taskService) CompleteTask(task dto.CompleteTaskRequest, userId int) err
 	err := s.tr.CompleteTask(task.Id, userId)
 
 	return err
+}
+
+func (s *taskService) IncompleteTask(task dto.CompleteTaskRequest, userId int) error {
+	return s.tr.IncompleteTask(task.Id, userId)
 }
 
 func (s *taskService) DeleteTask(task dto.DeleteTaskRequest, userId int) error {
