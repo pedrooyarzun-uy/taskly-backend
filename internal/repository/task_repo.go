@@ -16,7 +16,6 @@ type TaskRepository interface {
 	GetAllTasks(usr int) ([]domain.Task, error)
 	GetPendingTasks(usr int) ([]dto.TaskWithCategory, error)
 	GetById(id int) (domain.Task, error)
-	ModifyById(task domain.Task, usr int) error
 }
 
 type taskRepository struct {
@@ -28,7 +27,7 @@ func NewTaskRepository(db *sqlx.DB) TaskRepository {
 }
 
 func (r *taskRepository) CreateTask(task domain.Task) error {
-	_, err := r.db.Exec("INSERT INTO Task (title, description, completed, deleted, user_id, category_id) VALUES ($1, $2, $3, $4, $5, $6)", task.Title, task.Description, task.Completed, task.Deleted, task.User, task.Category)
+	_, err := r.db.Exec("INSERT INTO Task (title, due_date, completed, deleted, user_id, category_id) VALUES ($1, $2, $3, $4, $5, $6)", task.Title, task.DueDate, task.Completed, task.Deleted, task.User, task.Category)
 
 	if err != nil {
 		return err
@@ -113,10 +112,4 @@ func (r *taskRepository) GetById(id int) (domain.Task, error) {
 	}
 
 	return task, nil
-}
-
-func (r *taskRepository) ModifyById(task domain.Task, usr int) error {
-	_, err := r.db.Exec("UPDATE task SET title = $1, description = $2, category_id = $3 WHERE id = $4 AND user_id = $5", task.Title, task.Description, task.Category, task.Id, usr)
-
-	return err
 }

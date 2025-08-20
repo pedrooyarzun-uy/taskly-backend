@@ -5,7 +5,7 @@ import "time"
 type TaskWithCategory struct {
 	Id           int       `db:"id"`
 	Title        string    `db:"title"`
-	Description  string    `db:"description"`
+	DueDate      time.Time `db:"due_date"`
 	User         int       `db:"user_id"`
 	Completed    bool      `db:"completed"`
 	Deleted      bool      `db:"deleted"`
