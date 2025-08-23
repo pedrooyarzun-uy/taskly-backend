@@ -32,6 +32,7 @@ func (s *taskService) CreateTask(task dto.CreateTaskRequest, userId int) error {
 	domTask := domain.Task{
 		Title:     task.Title,
 		User:      userId,
+		DueDate:   task.DueDate,
 		Completed: false,
 		Deleted:   false,
 		Category:  task.Category,
