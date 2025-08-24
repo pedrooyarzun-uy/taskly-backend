@@ -1,11 +1,13 @@
 package dto
 
+import "time"
+
 type TaskResponse struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Completed   bool   `json:"completed"`
-	Deleted     bool   `json:"deleted"`
+	ID        int       `json:"id"`
+	Title     string    `json:"title"`
+	DueDate   time.Time `json:"due_date"`
+	Completed bool      `json:"completed"`
+	Deleted   bool      `json:"deleted"`
 }
 
 type CategoryWithTasks struct {

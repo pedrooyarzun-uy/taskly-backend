@@ -103,37 +103,6 @@ func RegisterTaskRoutes(r *gin.RouterGroup, s service.TaskService) {
 
 	})
 
-	r.PUT("/modify-task", func(ctx *gin.Context) {
-		var req dto.ModifyTaskRequest
-
-		if err := ctx.BindJSON(&req); err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
-
-		if req.Category == 0 && req.Description == "" && req.Title == "" {
-			ctx.JSON(400, gin.H{"error": "At least one of the fields must be modified"})
-			return
-		}
-
-		val, _ := ctx.Get("userID")
-		userID, ok := val.(int)
-
-		if !ok {
-			ctx.JSON(400, gin.H{"error": "something went wrong"})
-			return
-		}
-
-		err := s.ModifyTask(req, userID)
-
-		if err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
-
-		ctx.JSON(200, gin.H{"message": "ok"})
-	})
-
 	r.GET("/get-tasks", func(ctx *gin.Context) {
 		val, _ := ctx.Get("userID")
 		userID, ok := val.(int)
