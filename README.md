@@ -1,14 +1,37 @@
-# To-Do App
+# Taskly
 ![Imagen de golang](https://technology.riotgames.com/sites/default/files/articles/116/golangheader.png)
 
-To-Do App es una aplicación creada como proyecto para entender los conocimientos básicos de Golang. <br>
-La misma almacena todas las tareas creadas en un archivo data.json para la persistencia de las mismas. <br>
+Taskly is a modern web-based to-do application that helps you create, organize, and track your tasks in a simple and intuitive way.  
 
-## ¿Como usarlo?
-- Instalar Golang en tu máquina [click aqui](https://go.dev/dl/)
-- Clonar el repositorio
-- Abrir la carpeta
-- Ejecutar go build ./cmd/app/main.go
-- Doble click en main.exe
+Its goal is to provide a clean and minimal experience so you can focus on what truly matters: **getting things done**.  
 
-## ¡Trackea tus tareas!
+---
+
+## ✨ Features
+
+- ✅ Create, edit, and delete tasks  
+- 📂 Organize tasks by categories  
+- ⏰ Set due dates  
+- 🎨 Clean and responsive UI  
+- ⚡️ Fast and reliable backend  
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: [React](https://reactjs.org/) + [TailwindCSS](https://tailwindcss.com/)  
+- **Backend**: [Golang](https://go.dev/)  
+- **Database**: PostgreSQL  
+
+---
+
+## 🚀 Project Status  
+
+Taskly is currently in its **first stable release**, including all the core features of a to-do app.  
+You can check it up [here](https://taskly.pedrooyarzun.xyz)
+
+---
+
+## 📌 Author  
+
+Developed with 💻 by **Pedro Oyarzun**  
