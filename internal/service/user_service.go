@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"os"
 	"time"
 	"todo-app/internal/domain"
@@ -77,6 +78,10 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 		"Best regards,<br>" +
 		"The Taskly Team"
 	err = helpers.SendMail(user.Email, subject, body)
+
+	if err != nil {
+		log.Println("Error sending email:", err)
+	}
 
 	return err
 }
