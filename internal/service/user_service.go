@@ -40,7 +40,7 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 	}
 
 	if res != nil {
-		err := errors.New("el usuario ya existe en el sistema")
+		err := errors.New("User already exists")
 		return err
 	}
 
@@ -67,8 +67,16 @@ func (s *userService) CreateUser(usr dto.CreateUserRequest) error {
 
 	err = s.vr.Save(&ev)
 
-	link := "<a href='" + os.Getenv("ALLOWED_ORIGINS") + "/verify-account?token=" + token + "'>" + "Click aqui" + "</a>"
-	err = helpers.SendMail(user.Email, "Verifica tu cuenta!", "Necesitamos que verifiques tu cuenta! Ingresa a: "+link)
+	link := "<a href='" + os.Getenv("ALLOWED_ORIGINS") + "/verify-account?token=" + token + "'>" + "Verify your account" + "</a>"
+
+	subject := "Please verify your account!"
+	body := "Hello " + user.Name + ", <br>" +
+		"Thank you for registering with us! To complete your registration, please verify your account by clicking the link below: <br>" +
+		link + "<br>" +
+		"If you did not create an account with us, please ignore this email.<br>" +
+		"Best regards,<br>" +
+		"The Taskly Team"
+	err = helpers.SendMail(user.Email, subject, body)
 
 	return err
 }

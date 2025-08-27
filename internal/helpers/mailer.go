@@ -1,25 +1,21 @@
 package helpers
 
 import (
-	"net/smtp"
 	"os"
+
+	"gopkg.in/gomail.v2"
 )
 
 func SendMail(to, subject, body string) error {
 	addr := os.Getenv("EMAIL_ADDR")
 	pass := os.Getenv("EMAIL_PASS")
 
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
+	m := gomail.NewMessage()
+	m.SetHeader("From", addr)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", body)
 
-	msg := []byte("To: " + to + "\r\n" +
-		"Subject: " + subject + "\r\n" +
-		"MIME-version: 1.0;\r\n" +
-		"Content-Type: text/html; charset=\"UTF-8\";\r\n\r\n" +
-		body + "\r\n")
-
-	auth := smtp.PlainAuth("", addr, pass, smtpHost)
-
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, addr, []string{to}, msg)
-	return err
+	d := gomail.NewDialer("smtpout.secureserver.net", 465, addr, pass)
+	return d.DialAndSend(m)
 }
