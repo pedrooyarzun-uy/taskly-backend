@@ -16,6 +16,7 @@ func SendMail(to, subject, body string) error {
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/html", body)
 
-	d := gomail.NewDialer("smtpout.secureserver.net", 465, addr, pass)
+	d := gomail.NewDialer("smtpout.secureserver.net", 587, addr, pass)
+	d.SSL = false
 	return d.DialAndSend(m)
 }
