@@ -93,8 +93,14 @@ func (s *userService) VerifyUser(token string) error {
 func (s *userService) SignIn(req dto.SignInRequest) (string, error) {
 	usr, err := s.ur.GetUserByEmail(req.Email)
 
+	auth := s.vr.CheckIfAuth(usr.Id)
+
 	if err != nil || usr == nil || !helpers.VerifyPassword(req.Password, usr.Password) {
 		return "", errors.New("Incorrect email or password")
+	}
+
+	if !auth {
+		return "", errors.New("Check your email!")
 	}
 
 	token, err := helpers.GenerateJWT(usr.Id, usr.Name)
