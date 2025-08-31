@@ -1,14 +1,16 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"todo-app/internal/domain"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type VerificationRepository interface {
 	Save(ev *domain.EmailVerification) error
 	FindByToken(token string) (*domain.EmailVerification, error)
 	MarkAsUsed(token string) error
+	CheckIfAuth(usr int) bool
 }
 
 type verificationRepository struct {
@@ -49,4 +51,17 @@ func (r *verificationRepository) MarkAsUsed(token string) error {
 	}
 
 	return nil
+}
+
+func (r *verificationRepository) CheckIfAuth(usr int) bool {
+	var res int
+
+	err := r.db.Get(&res, "SELECT COUNT(*) FROM email_verification WHERE user_id = $1 AND used = true", usr)
+
+	if err != nil {
+		return false
+	}
+
+	return res == 1
+
 }
