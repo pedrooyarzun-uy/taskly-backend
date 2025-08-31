@@ -1,25 +1,22 @@
 package helpers
 
 import (
-	"net/smtp"
 	"os"
+
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendMail(to, subject, body string) error {
-	addr := os.Getenv("EMAIL_ADDR")
-	pass := os.Getenv("EMAIL_PASS")
+func SendMail(toEmail, subject, body string) error {
 
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
+	//Domain e-mail
+	from := mail.NewEmail("Taskly", "me@pedrooyarzun.xyz")
+	to := mail.NewEmail(toEmail, toEmail)
 
-	msg := []byte("To: " + to + "\r\n" +
-		"Subject: " + subject + "\r\n" +
-		"MIME-version: 1.0;\r\n" +
-		"Content-Type: text/html; charset=\"UTF-8\";\r\n\r\n" +
-		body + "\r\n")
+	message := mail.NewSingleEmail(from, subject, to, body, body)
+	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 
-	auth := smtp.PlainAuth("", addr, pass, smtpHost)
+	_, err := client.Send(message)
 
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, addr, []string{to}, msg)
 	return err
 }
